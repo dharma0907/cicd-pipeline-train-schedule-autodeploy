@@ -1,0 +1,33 @@
+pipeline {
+    agent { label 'testServer' }
+// environment{
+ //    DOCKER_HUB_CREDENTIALS = credentials('DOCKER_HUB_CRED')
+  //   }
+    stages {
+        stage('checkout git branch') {
+            steps {
+      git credentialsId: 'github', url: 'https://github.com/dharma0907/Edurekaproject.git'
+                checkout scm
+            }
+        }
+stage('docker build image') {
+            // build docker image
+            steps {
+                sh "docker build --no-cache -t train-v${env.BUILD_NUMBER} -f cicd/Dockerfile ."
+            }
+        }
+        stage('docker tag the build') {
+            steps {
+               
+                sh "docker tag train-v${env.BUILD_NUMBER} trainSchedule:v${env.BUILD_NUMBER}"    
+            }
+        }
+        stage('docker run the image') {
+            steps {
+               
+                sh "docker run -itd -p 8083:80 trainSchedule:v${env.BUILD_NUMBER}"    
+            }
+        }
+}
+}
+
