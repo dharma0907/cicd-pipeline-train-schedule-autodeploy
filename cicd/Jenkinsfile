@@ -6,8 +6,7 @@ pipeline {
     stages {
         stage('checkout git branch') {
             steps {
-      git credentialsId: 'github', url: 'https://github.com/dharma0907/Edurekaproject.git'
-                checkout scm
+                     checkout scm
             }
         }
 stage('docker build image') {
